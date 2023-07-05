@@ -13,9 +13,6 @@ import ujson
 
 dth = dht.DHT11(machine.Pin(15))
 adc = ADC(Pin(27))
-morning = False
-noon = False
-night = False
 i = 0
 DELAY = 5  # Delay in seconds between posts
 
@@ -193,37 +190,33 @@ print("connecting to UBIDOTS")
 connect()
 
 while i < 50:
-    utime.sleep(2)
+    # if Button():
+    #     ToString()
     ToString()
-    if 30 < MeasureLumi() < 70 and not morning:
+    if 30 < MeasureLumi() < 70 and i < 3:
         sendData(DEVICE_LABEL, TEMPERATURE_LABEL, MeasureTemperature())
         sleep(DELAY)
         sendData(DEVICE_LABEL, HUMIDITY_LABEL, MeasureHumidity())
         sleep(DELAY)
         sendData(DEVICE_LABEL, LIGHT_LABEL, MeasureLumi())
         sleep(DELAY)
-        morning = True
-    elif MeasureLumi() < 30 and not noon:
+        i = i+1
+    elif MeasureLumi() < 30 and i > 2 and i < 6:
         returnValue = sendData(DEVICE_LABEL, TEMPERATURE_LABEL, MeasureTemperature())
         sleep(DELAY)
         returnValue = sendData(DEVICE_LABEL, HUMIDITY_LABEL, MeasureHumidity())
         sleep(DELAY)
         returnValue = sendData(DEVICE_LABEL, LIGHT_LABEL, MeasureLumi())
         sleep(DELAY)
-        noon = True
-    elif MeasureLumi() > 70 and not night:
+        i = i+1
+    elif MeasureLumi() > 70 and i > 5 and i < 9:
         returnValue = sendData(DEVICE_LABEL, TEMPERATURE_LABEL, MeasureTemperature())
         sleep(DELAY)
         returnValue = sendData(DEVICE_LABEL, HUMIDITY_LABEL, MeasureHumidity())
         sleep(DELAY)
         returnValue = sendData(DEVICE_LABEL, LIGHT_LABEL, MeasureLumi())
         sleep(DELAY)
-        night = True
-    if morning and noon and night:
-        morning = False
-        noon = False
-        night = False
-    i = i+1
+        i = i+1
 
 # WiFi disconnection
 disconnect()
